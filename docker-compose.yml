@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: dev-postgres
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: joboffer123
+      POSTGRES_PASSWORD: joboffer123
+      POSTGRES_DB: jobofferdb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: dev-pgadmin
+    restart: always
+    ports:
+      - '5050:80' # pgAdmin available at http://localhost:5050
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@joboffer.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    depends_on:
+      - postgres
+
+volumes:
+  pgdata:
