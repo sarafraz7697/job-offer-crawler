@@ -1,13 +1,13 @@
-import drizzle from 'drizzle-orm';
+import * as drizzle from 'drizzle-orm';
 import { Inject } from '@nestjs/common';
 import { v4 as generateUuid } from 'uuid';
 import { Injectable } from '@nestjs/common';
 import { jobs } from '@drizzle-schema/index';
-import { UnifiedJobDto } from '@job-crawler/dtos';
 import { companies } from '@drizzle-schema/companies';
 import { locations } from '@drizzle-schema/locations';
 import { DrizzleDataService } from '@libs/frameworks/data-services/drizzle';
 import { DRIZZLE_DATA_SERVICE } from '@libs/constants/frameworks/data-services';
+import { UnifiedJobDto } from '@libs/dtos';
 
 @Injectable()
 export class JobPersistService {

@@ -11,12 +11,14 @@ import {
 } from './services';
 import { DrizzleDataServiceModule } from '@libs/frameworks/data-services/drizzle';
 import { JobCronService } from './services/job-cron.service';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
     EnvConfigModule,
     DrizzleDataServiceModule,
+    HttpModule.register({ timeout: 3000 }),
   ],
   providers: [
     JobCronService,

@@ -1,4 +1,4 @@
-export class UnifiedJobDto {
+export interface UnifiedJobDto {
   id: string;
   title: string;
   company: {

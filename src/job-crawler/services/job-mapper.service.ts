@@ -1,5 +1,5 @@
+import { UnifiedJobDto } from '@libs/dtos';
 import { Injectable } from '@nestjs/common';
-import { UnifiedJobDto } from '@job-crawler/dtos';
 
 @Injectable()
 export class JobMapperService {
