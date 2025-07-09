@@ -24,19 +24,4 @@ export class JobCronService implements OnModuleInit {
     this.schedulerRegistry.addCronJob('job-crawler', job);
     job.start();
   }
-
-  addCronJob(
-    name: string,
-    cronExpression: string,
-    callback: () => Promise<void>,
-  ) {
-    const job = new CronJob(``, () => {});
-
-    this.schedulerRegistry.addCronJob(name, job);
-    job.start();
-
-    this.logger.log(
-      `The cron job ${name} has been added with the following cron expression : ${cronExpression}.`,
-    );
-  }
 }
