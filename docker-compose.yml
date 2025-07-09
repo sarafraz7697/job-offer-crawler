@@ -13,18 +13,26 @@ services:
       POSTGRES_DB: jobofferdb
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - jobnetwork
 
   pgadmin:
     image: dpage/pgadmin4
     container_name: dev-pgadmin
     restart: always
     ports:
-      - '5050:80' # pgAdmin available at http://localhost:5050
+      - '5050:80'
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@joboffer.com
       PGADMIN_DEFAULT_PASSWORD: admin123
     depends_on:
       - postgres
+    networks:
+      - jobnetwork
 
 volumes:
   pgdata:
+
+networks:
+  jobnetwork:
+    driver: bridge

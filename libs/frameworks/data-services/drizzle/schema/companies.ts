@@ -1,3 +1,4 @@
+import { InferSelectModel } from 'drizzle-orm';
 import { pgTable, varchar, text } from 'drizzle-orm/pg-core';
 
 export const companies = pgTable('companies', {
@@ -6,3 +7,5 @@ export const companies = pgTable('companies', {
   industry: varchar('industry'),
   website: text(),
 });
+
+export type CompaniesSchema = InferSelectModel<typeof companies>;

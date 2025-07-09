@@ -1,3 +1,5 @@
+import { JobTypes } from '@libs/core/frameworks/data-services/drizzle/job';
+
 export interface UnifiedJobDto {
   id: string;
   title: string;
@@ -18,6 +20,6 @@ export interface UnifiedJobDto {
   };
   experience?: number;
   skills: string[];
-  type?: string;
+  type?: JobTypes;
   postedDate: Date;
 }

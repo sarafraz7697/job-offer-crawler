@@ -1,17 +1,24 @@
-import { Global, Module } from '@nestjs/common';
-import { DrizzleDataService } from './drizzle-data.service';
-import { EnvConfigModule } from '@libs/config/env/env.module';
-import { DRIZZLE_DATA_SERVICE } from '@libs/constants/frameworks/data-services';
+import { Pool } from 'pg';
+import * as schema from './schema';
+import { Module } from '@nestjs/common';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { EnvConfigService } from '@libs/config/env';
+import { DATA_SERVICE_TOKEN } from '@libs/core/interface/services';
 
-@Global()
 @Module({
-  imports: [EnvConfigModule],
   providers: [
     {
-      provide: DRIZZLE_DATA_SERVICE,
-      useClass: DrizzleDataService,
+      provide: DATA_SERVICE_TOKEN,
+      inject: [EnvConfigService],
+      useFactory: (configService: EnvConfigService) => {
+        const pool = new Pool({
+          connectionString: configService.getPostgreSqlConnectionString(),
+        });
+
+        return drizzle(pool, { schema });
+      },
     },
   ],
-  exports: [DRIZZLE_DATA_SERVICE],
+  exports: [DATA_SERVICE_TOKEN],
 })
 export class DrizzleDataServiceModule {}

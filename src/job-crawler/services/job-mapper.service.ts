@@ -1,13 +1,18 @@
-import { UnifiedJobDto } from '@libs/dtos';
 import { Injectable } from '@nestjs/common';
+import { UnifiedJobDto } from '@libs/dtos/unified/unified-job.dto';
+import { Api1JobDto, Api2JobDto } from '@libs/dtos';
+import { JobTypes } from '@libs/core/frameworks/data-services/drizzle/job';
 
 @Injectable()
 export class JobMapperService {
-  fromApi1(raw: any): UnifiedJobDto {
+  fromApi1(raw: Api1JobDto): UnifiedJobDto {
     const [city, state] = raw.details.location
       .split(',')
       .map((s: string) => s.trim());
-    const [minStr, maxStr] = raw.details.salaryRange.match(/\d+/g);
+    const [minStr, maxStr] = raw.details.salaryRange.match(/\d+/g) ?? [
+      '0',
+      '0',
+    ];
 
     return {
       id: raw.jobId,
@@ -27,14 +32,14 @@ export class JobMapperService {
         currency: 'USD',
       },
       skills: raw.skills,
-      type: raw.details.type,
+      type: JobTypes[raw?.details?.type?.toUpperCase()],
       postedDate: new Date(raw.postedDate),
     };
   }
 
-  fromApi2(raw: any): UnifiedJobDto {
+  fromApi2(id: string, raw: Api2JobDto): UnifiedJobDto {
     return {
-      id: raw.id,
+      id: id,
       title: raw.position,
       company: {
         name: raw.employer.companyName,
