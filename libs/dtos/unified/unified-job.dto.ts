@@ -1,4 +1,4 @@
-import { JobTypes } from '@libs/core/frameworks/data-services/drizzle/job';
+import { JobTypes } from '@libs/core/frameworks/data-services';
 
 export interface UnifiedJobDto {
   id: string;

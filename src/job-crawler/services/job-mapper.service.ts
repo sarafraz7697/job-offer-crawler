@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UnifiedJobDto } from '@libs/dtos/unified/unified-job.dto';
 import { Api1JobDto, Api2JobDto } from '@libs/dtos';
-import { JobTypes } from '@libs/core/frameworks/data-services/drizzle/job';
+import { JobTypes } from '@libs/core/frameworks/data-services';
 
 @Injectable()
 export class JobMapperService {
@@ -13,6 +13,10 @@ export class JobMapperService {
       '0',
       '0',
     ];
+
+    let jobType: JobTypes =
+      JobTypes[raw.details.type.replace('-', '_').toUpperCase()] ??
+      JobTypes.PART_TIME;
 
     return {
       id: raw.jobId,
@@ -32,7 +36,7 @@ export class JobMapperService {
         currency: 'USD',
       },
       skills: raw.skills,
-      type: JobTypes[raw?.details?.type?.toUpperCase()],
+      type: jobType,
       postedDate: new Date(raw.postedDate),
     };
   }
@@ -54,6 +58,7 @@ export class JobMapperService {
         max: raw.compensation.max,
         currency: raw.compensation.currency,
       },
+      type: JobTypes.PART_TIME,
       remote: raw.location.remote,
       skills: raw.requirements.technologies,
       experience: raw.requirements.experience,

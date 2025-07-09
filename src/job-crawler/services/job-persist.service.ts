@@ -64,7 +64,7 @@ export class JobPersistService {
       title: job.title,
       locationId: locationRecord.id,
       companyId: companyRecord.id,
-      type: job.type,
+      type: `${job.type}`,
       remote: job.remote,
       salaryMin: job.salary.min,
       salaryMax: job.salary.max,
