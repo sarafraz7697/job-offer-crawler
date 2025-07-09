@@ -1,8 +1,8 @@
 import { InferSelectModel } from 'drizzle-orm';
-import { pgTable, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, varchar, serial } from 'drizzle-orm/pg-core';
 
 export const skills = pgTable('skills', {
-  id: varchar('id').primaryKey(),
+  id: serial('id').primaryKey(),
   name: varchar('name').notNull(),
 });
 

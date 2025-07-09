@@ -24,8 +24,8 @@ export class JobMapperService {
       location: {
         city,
         state,
-        remote: false,
       },
+      remote: false,
       salary: {
         min: parseInt(minStr, 10) * 1000,
         max: parseInt(maxStr, 10) * 1000,
@@ -48,13 +48,13 @@ export class JobMapperService {
       location: {
         city: raw.location.city,
         state: raw.location.state,
-        remote: raw.location.remote,
       },
       salary: {
         min: raw.compensation.min,
         max: raw.compensation.max,
         currency: raw.compensation.currency,
       },
+      remote: raw.location.remote,
       skills: raw.requirements.technologies,
       experience: raw.requirements.experience,
       postedDate: new Date(raw.datePosted),

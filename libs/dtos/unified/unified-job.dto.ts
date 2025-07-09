@@ -11,13 +11,13 @@ export interface UnifiedJobDto {
   location: {
     city: string;
     state: string;
-    remote: boolean;
   };
   salary: {
     min: number;
     max: number;
     currency: string;
   };
+  remote?: boolean;
   experience?: number;
   skills: string[];
   type?: JobTypes;

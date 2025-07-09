@@ -1,6 +1,5 @@
-import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { DataServiceType } from '@libs/core/frameworks/data-services';
-import * as schema from '@libs/frameworks/data-services/drizzle/schema';
+import { DrizzleRepository } from '@libs/frameworks/data-services/drizzle';
 
 export const DATA_SERVICE_TOKEN = Symbol('DATA_SERVICE_TOKEN');
 
@@ -12,5 +11,3 @@ type RepositoryMapByDb = {
 export type IDataservice<
   T extends DataServiceType = DataServiceType.POSTGRESQL,
 > = RepositoryMapByDb[T];
-
-export interface DrizzleRepository extends NodePgDatabase<typeof schema> {}

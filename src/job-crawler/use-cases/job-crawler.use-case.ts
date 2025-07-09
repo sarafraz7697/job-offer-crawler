@@ -6,20 +6,20 @@ import { CRAWLER_SOURCES } from '@libs/core/frameworks/data-sources';
 
 @Injectable()
 export class JobCrawlerUseCase {
-  // constructor(
-  //   @Inject(CRAWLER_SOURCES)
-  //   private readonly sources: ICrawlerSource[],
-  //   private readonly persister: JobPersistService,
-  // ) {}
+  constructor(
+    @Inject(CRAWLER_SOURCES)
+    private readonly sources: ICrawlerSource[],
+    private readonly persister: JobPersistService,
+  ) {}
 
   async execute(): Promise<void> {
-    // const jobs: UnifiedJobDto[] = [];
-    // for (const source of this.sources) {
-    //   const raw = await source.fetch();
-    //   jobs.push(...source.toUnified(raw));
-    // }
-    // for (const job of jobs) {
-    //   await this.persister.save(job);
-    // }
+    const jobs: UnifiedJobDto[] = [];
+    for (const source of this.sources) {
+      const raw = await source.fetch();
+      jobs.push(...source.toUnified(raw));
+    }
+    for (const job of jobs) {
+      await this.persister.process(job);
+    }
   }
 }

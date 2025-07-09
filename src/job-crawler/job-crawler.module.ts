@@ -1,13 +1,16 @@
 import * as sources from './sources';
 import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
+import { JobCrawlerUseCase } from './use-cases';
 import { ScheduleModule } from '@nestjs/schedule';
 import { JobCronService } from './services/job-cron.service';
 import { EnvConfigModule } from '@libs/config/env/env.module';
 import { JobMapperService, JobPersistService } from './services';
-import { JobCrawlerUseCase } from './use-cases/job-crawler.use-case';
 import { CRAWLER_SOURCES } from '@libs/core/frameworks/data-sources';
-import { DrizzleDataServiceModule } from '@libs/frameworks/data-services/drizzle';
+import {
+  DrizzleDataServiceModule,
+  DrizzleRepositoriesModule,
+} from '@libs/frameworks/data-services/drizzle';
 import { ICrawlerSource } from '@libs/core/interface/data-sources';
 
 const CRAWLER_CLASSES = Object.values(sources);
@@ -16,6 +19,7 @@ const CRAWLER_CLASSES = Object.values(sources);
     ScheduleModule.forRoot(),
     EnvConfigModule,
     DrizzleDataServiceModule,
+    DrizzleRepositoriesModule,
     HttpModule,
   ],
   providers: [

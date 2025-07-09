@@ -13,7 +13,7 @@
     "paths": {
       "@libs/*": ["libs/*"],
       "@job-crawler/*": ["src/job-crawler/*"],
-      "@drizzle-schema/*": ["libs/frameworks/data-services/drizzle/schema/*"]
+      "@drizzle/*": ["libs/frameworks/data-services/drizzle/*"]
     },
     "incremental": true,
     "skipLibCheck": true,

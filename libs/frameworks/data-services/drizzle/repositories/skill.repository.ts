@@ -6,15 +6,14 @@ import {
   DATA_SERVICE_TOKEN,
 } from '@libs/core/interface/services';
 import {
-  companies,
-  CompaniesSchema,
+  skills,
   SkillsSchema,
 } from '@libs/frameworks/data-services/drizzle/schema';
 import { eq } from 'drizzle-orm';
 
 @Injectable()
-export class CompaniesRepository
-  extends BaseRepository<CompaniesSchema>
+export class SkillRepository
+  extends BaseRepository<SkillsSchema>
   implements ISkillRepository
 {
   constructor(@Inject(DATA_SERVICE_TOKEN) dataService: IDataservice) {
@@ -22,10 +21,10 @@ export class CompaniesRepository
   }
 
   protected get table() {
-    return companies;
+    return skills;
   }
 
-  async findByName(name: string): Promise<CompaniesSchema | null> {
+  async findByName(name: string): Promise<SkillsSchema | null> {
     const result = await this.dataService
       .select()
       .from(this.table)
@@ -36,7 +35,7 @@ export class CompaniesRepository
 
   async createAndReturn(
     data: Pick<SkillsSchema, 'name'>,
-  ): Promise<CompaniesSchema> {
+  ): Promise<SkillsSchema> {
     const result = await this.dataService
       .insert(this.table)
       .values(data)
