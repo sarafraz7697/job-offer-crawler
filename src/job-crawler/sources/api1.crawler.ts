@@ -18,6 +18,6 @@ export class Api1Crawler extends BaseJobFetcher<Api1ResponseDto> {
   }
 
   toUnified(data: Api1ResponseDto): UnifiedJobDto[] {
-    return data.jobs.map((job) => this.mapper.fromApi1(job));
+    return (data.jobs ?? []).map((job) => this.mapper.fromApi1(job));
   }
 }

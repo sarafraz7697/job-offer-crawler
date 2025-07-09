@@ -18,7 +18,7 @@ export class Api2Crawler extends BaseJobFetcher<Api2ResponseDto> {
   }
 
   toUnified(data: Api2ResponseDto): UnifiedJobDto[] {
-    return Object.entries(data.data.jobsList).map(([id, job]) =>
+    return Object.entries(data.data?.jobsList ?? {}).map(([id, job]) =>
       this.mapper.fromApi2(id, job),
     );
   }

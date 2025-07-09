@@ -1,12 +1,13 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get, Query } from '@nestjs/common';
+import { GetJobOffersUseCase } from '@job-crawler/use-cases';
+import { JobFilterDto } from '@libs/dtos/unified/job-filter.dto';
 
-@Controller()
+@Controller('/job-offers')
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly getJobsUseCase: GetJobOffersUseCase) {}
 
-  @Get('job-offers')
-  getHello(): string {
-    return this.appService.getHello();
+  @Get()
+  async getJobOffers(@Query() filters: JobFilterDto) {
+    return this.getJobsUseCase.execute(filters);
   }
 }
