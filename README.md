@@ -1,98 +1,185 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Job Offers Crawler Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A scalable backend service to aggregate, unify, and expose job offers from multiple external APIs, built with NestJS, Drizzle ORM (PostgreSQL).
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## Table of Contents
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- [Project Structure](#project-structure)
+- [Setup](#setup)
+- [Environment Variables](#environment-variables)
+- [Development](#development)
+- [Testing](#testing)
+- [Building and Running](#building-and-running)
+- [Modules Overview](#modules-overview)
+- [Data Flow](#data-flow)
+- [API Endpoints](#api-endpoints)
+- [Technologies Used](#technologies-used)
+- [Contributing](#contributing)
+- [License](#license)
 
-## Project setup
+---
 
-```bash
-$ pnpm install
+## Project Structure
+
+```text
+├── .env                       # Local environment variables (not committed)
+├── .env.sample                # Sample env file template
+├── docker-compose.yml         # Docker setup for local dev and dependencies
+├── drizzle.config.ts          # Drizzle ORM config for migrations & schema
+├── nest-cli.json              # NestJS CLI configuration
+├── package.json               # Project dependencies and scripts
+├── pnpm-lock.yaml             # PNPM lock file for reproducible installs
+├── tsconfig.json              # TypeScript config
+├── tsconfig.build.json        # Build-specific TS config
+├── libs                       # Shared libraries (core interfaces, dtos, frameworks, config)
+│   ├── config/env             # Env var management and validation
+│   ├── core                   # Core abstractions and interfaces for services, data sources
+│   ├── dtos                   # Data Transfer Objects for external APIs and unified formats
+│   ├── frameworks             # Implementations: Drizzle ORM, Redis, data-source fetchers
+│   └── services               # Shared NestJS services (e.g. data service module)
+├── src                        # Application source code
+│   └── job-crawler            # Job crawling domain module
+│       ├── services           # Business logic services (persist, mapping, cron jobs)
+│       ├── sources            # External API crawler implementations
+│       └── use-cases          # Application use cases (e.g. fetching job offers)
+├── test                       # End-to-end tests
+└── README.md                  # This file
 ```
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ pnpm run start
+## Setup
 
-# watch mode
-$ pnpm run start:dev
+### Prerequisites
 
-# production mode
-$ pnpm run start:prod
+- Node.js >=18.x
+
+- PNPM
+
+- Docker & Docker Compose (for PostgreSQL)
+
+- PostgreSQL database
+
+### Installation
+
+```
+pnpm install
 ```
 
-## Run tests
+### Environment Variables
 
-```bash
-# unit tests
-$ pnpm run test
+Copy .env.sample to .env and fill out:
 
-# e2e tests
-$ pnpm run test:e2e
+- Database connection URI
 
-# test coverage
-$ pnpm run test:cov
+- API keys if needed
+
+- Other configuration variables
+
+### Development
+
+Start the local PostgreSQL database:
+
+```
+docker-compose up -d
 ```
 
-## Deployment
+Run database migrations:
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+```
+npx drizzle-kit push
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Start the development server:
 
-## Resources
+```
+pnpm start:dev
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+### Testing
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+Run tests with Jest:
 
-## Support
+```
+pnpm test
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Building and Running
 
-## Stay in touch
+Build the project:
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```
+pnpm build
+```
 
-## License
+Run the production server:
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+```
+pnpm start
+```
+
+## Modules Overview
+
+- libs/config/env: Environment config & validation
+
+- libs/core/interface: Interfaces for repositories, data services, data sources
+
+- libs/dtos: API and unified DTOs with validation schemas
+
+- libs/frameworks/data-services/drizzle: Drizzle ORM schemas, repositories, and modules
+
+- libs/frameworks/data-sources: Base and specific API crawlers with HTTP client logic
+
+- src/job-crawler: Domain logic for job crawling, including services, sources, and use-cases
+
+## Data Flow
+
+1. **Fetch:** External APIs are crawled by specific crawler classes under libs/frameworks/data-sources.
+
+2. **Transform:** API responses are mapped to a unified DTO (UnifiedJobDto).
+
+3. **Validate:** Incoming data validated against JOI or class-validator schemas.
+
+4. **Persist:** Unified jobs and related entities (company, skills, location) saved via Drizzle ORM repositories.
+
+5. **Expose:** A REST API (/api/job-offers) provides filtered and paginated access to aggregated job data.
+
+### API Endpoints
+
+**GET** `/api/job-offers`
+Fetch job offers with optional filters and pagination:
+
+**Query** / **Parameter** / **Type Description**
+
+```
+title	        string	        Filter by job title (partial)
+locationId	number	        Filter by location ID
+salaryMin	number	        Minimum salary filter
+salaryMax	number	        Maximum salary filter
+page	        number	        Pagination page number (default 1)
+limit	        number	        Items per page (default 10)
+```
+
+Response includes data array and meta pagination info.
+
+---
+
+### Technologies Used
+
+- [NestJS](https://nestjs.com) - Node.js framework
+
+- [Drizzle ORM](https://orm.drizzle.team) - Type-safe SQL ORM
+
+- [PostgreSQL](https://www.postgresql.org) - Relational database
+
+- [RxJS](https://rxjs.dev) - Reactive programming (HTTP calls)
+
+- [Class-validator](https://github.com/typestack/class-validator) - Input validation
+
+- [Pino](https://getpino.io) - Logger
+
+- [Docker](href="https://www.docker.com) - Containerization
+
+- [Joi](https://joi.dev/) - Schema data validator
