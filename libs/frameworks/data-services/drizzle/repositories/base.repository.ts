@@ -2,6 +2,25 @@ import { eq } from 'drizzle-orm';
 import { IDataservice } from '@libs/core/interface/services';
 import { IBaseRepository } from '@libs/core/interface/data-services/drizzle';
 
+/**
+ * Abstract base repository class providing common CRUD operations for a data model.
+ *
+ * @typeParam TModel - The type of the data model managed by the repository.
+ *
+ * @remarks
+ * This class implements the `IBaseRepository` interface and provides generic
+ * methods for creating, finding, updating, and deleting records using a data service.
+ * Concrete subclasses must provide the `table` property representing the database table.
+ *
+ * @example
+ * class UserRepository extends BaseRepository<User> {
+ *   protected get table() {
+ *     return usersTable;
+ *   }
+ * }
+ *
+ * @param dataService - The data service instance used for database operations.
+ */
 export abstract class BaseRepository<TModel>
   implements IBaseRepository<TModel>
 {

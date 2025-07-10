@@ -3,6 +3,21 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import * as RepoTokens from '@libs/core/interface/data-services/drizzle';
 import * as Repositories from '@libs/frameworks/data-services/drizzle/repositories';
 
+/**
+ * Service responsible for persisting job data into the database.
+ *
+ * This service handles the creation and association of companies, locations, skills, and jobs.
+ * It ensures that duplicate jobs are not persisted and links the relevant skills to each job.
+ *
+ * @remarks
+ * - Uses repositories for companies, locations, skills, jobs, and job-skill associations.
+ * - Logs warnings for duplicate jobs and logs successful persistence.
+ *
+ * @example
+ * ```typescript
+ * await jobPersistService.process(unifiedJobDto);
+ * ```
+ */
 @Injectable()
 export class JobPersistService {
   private readonly logger = new Logger(JobPersistService.name);
@@ -24,6 +39,14 @@ export class JobPersistService {
     private readonly locationRepository: Repositories.LocationRepository,
   ) {}
 
+  /**
+   * Processes a unified job data transfer object by persisting its related entities (company, location, skills)
+   * and the job itself into the database. Handles creation or retrieval of associated records, checks for duplicates,
+   * and links job skills. Logs warnings for duplicates and successful persistence.
+   *
+   * @param job - The unified job data transfer object containing job details, company, skills, and location.
+   * @returns A promise that resolves when the job and its related entities have been processed and persisted.
+   */
   async process(job: UnifiedJobDto): Promise<void> {
     const { company, skills, location } = job;
 

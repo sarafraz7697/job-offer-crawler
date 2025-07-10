@@ -14,6 +14,34 @@ import {
 import { ICrawlerSource } from '@libs/core/interface/data-sources';
 
 const CRAWLER_CLASSES = Object.values(sources);
+/**
+ * The `JobCrawlerModule` is a NestJS module responsible for orchestrating the job crawling functionality.
+ *
+ * @remarks
+ * This module imports essential dependencies such as HTTP communication, environment configuration,
+ * scheduling, and data services. It provides and exports use cases and services related to job crawling,
+ * mapping, and persistence. The module also dynamically injects multiple crawler sources using a factory provider.
+ *
+ * @module
+ * @imports
+ * - HttpModule: Enables HTTP requests for crawling job offers.
+ * - EnvConfigModule: Provides environment configuration.
+ * - ScheduleModule: Enables scheduled tasks (cron jobs).
+ * - DrizzleDataServiceModule: Handles data service integration.
+ * - DrizzleRepositoriesModule: Provides repository access for data persistence.
+ *
+ * @exports
+ * - GetJobOffersUseCase: Use case for retrieving job offers.
+ *
+ * @providers
+ * - JobCronService: Handles scheduled crawling tasks.
+ * - JobCrawlerUseCase: Main use case for crawling jobs.
+ * - GetJobOffersUseCase: Use case for fetching job offers.
+ * - JobMapperService: Maps raw job data to domain models.
+ * - JobPersistService: Persists job data to storage.
+ * - ...CRAWLER_CLASSES: Array of crawler source classes.
+ * - CRAWLER_SOURCES: Token for injecting all crawler sources as an array.
+ */
 @Module({
   imports: [
     HttpModule,

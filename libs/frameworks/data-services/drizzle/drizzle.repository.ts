@@ -8,6 +8,22 @@ import { DrizzleDataServiceModule } from './drizzle-data.module';
 
 export interface DrizzleRepository extends NodePgDatabase<typeof schema> {}
 
+/**
+ * NestJS module that provides repository implementations using Drizzle ORM.
+ *
+ * This module imports the `DrizzleDataServiceModule` and registers repository providers
+ * for jobs, companies, job skills, locations, and skills. Each repository is associated
+ * with a specific injection token defined in `RepoTokens`, and the corresponding
+ * repository class from `Repositories` is used as the implementation.
+ *
+ * The module also exports these repository tokens, making them available for injection
+ * in other modules that import `DrizzleRepositoriesModule`.
+ *
+ * @module DrizzleRepositoriesModule
+ * @see DrizzleDataServiceModule
+ * @see RepoTokens
+ * @see Repositories
+ */
 @Module({
   imports: [DrizzleDataServiceModule],
   providers: [

@@ -5,6 +5,16 @@ import {
   JobFilter,
 } from '@libs/core/interface/data-services/drizzle';
 
+/**
+ * Use case for retrieving job offers based on provided filters.
+ *
+ * @remarks
+ * This use case fetches a paginated list of job offers and the total count
+ * matching the specified filters. It returns both the data and pagination metadata.
+ *
+ * @param filters - The filtering and pagination options for retrieving job offers.
+ * @returns An object containing the filtered job offers and pagination metadata.
+ */
 @Injectable()
 export class GetJobOffersUseCase {
   constructor(
