@@ -16,8 +16,6 @@ A scalable backend service to aggregate, unify, and expose job offers from multi
 - [Data Flow](#data-flow)
 - [API Endpoints](#api-endpoints)
 - [Technologies Used](#technologies-used)
-- [Contributing](#contributing)
-- [License](#license)
 
 ---
 
