@@ -1,6 +1,9 @@
 import { BaseRepository } from './base.repository';
 import { Injectable, Inject } from '@nestjs/common';
-import { ISkillRepository } from '@libs/core/interface/data-services/drizzle';
+import {
+  ICompanyRepository,
+  ISkillRepository,
+} from '@libs/core/interface/data-services/drizzle';
 import {
   IDataservice,
   DATA_SERVICE_TOKEN,
@@ -15,7 +18,7 @@ import { eq } from 'drizzle-orm';
 @Injectable()
 export class CompaniesRepository
   extends BaseRepository<CompaniesSchema>
-  implements ISkillRepository
+  implements ICompanyRepository
 {
   constructor(@Inject(DATA_SERVICE_TOKEN) dataService: IDataservice) {
     super(dataService);
@@ -42,5 +45,12 @@ export class CompaniesRepository
       .values(data)
       .returning();
     return result[0];
+  }
+
+  async updateById(id: number, data: Partial<CompaniesSchema>): Promise<void> {
+    await this.dataService
+      .update(companies)
+      .set(data)
+      .where(eq(companies.id, id));
   }
 }

@@ -53,53 +53,65 @@ export class JobPersistService {
     let companyRecord = await this.companyRepository.findByName(company.name);
     if (!companyRecord) {
       companyRecord = await this.companyRepository.createAndReturn(company);
-    }
+    } else {
+      // Update company record if missing industry or website
+      const shouldUpdate =
+        (!companyRecord.industry && company.industry) ||
+        (!companyRecord.website && company.website);
 
-    const locationRecord = await this.locationRepository.createOrFindLocation(
-      location.state,
-      location.city,
-    );
-
-    const skillIds: number[] = [];
-    for (const skill of skills) {
-      let skillRecord = await this.skillRepository.findByName(skill);
-      if (!skillRecord) {
-        skillRecord = await this.skillRepository.createAndReturn({
-          name: skill,
+      if (shouldUpdate) {
+        await this.companyRepository.updateById(companyRecord.id, {
+          industry: company.industry ?? companyRecord.industry,
+          website: company.website ?? companyRecord.website,
         });
       }
-      skillIds.push(skillRecord.id);
-    }
 
-    const duplicate = await this.jobRepository.findDuplicate({
-      title: job.title,
-      companyId: companyRecord.id,
-      locationId: locationRecord.id,
-    });
-    if (duplicate) {
-      this.logger.warn(
-        `Duplicate job detected: ${job.title} at ${company.name}`,
+      const locationRecord = await this.locationRepository.createOrFindLocation(
+        location.state,
+        location.city,
       );
-      return;
+
+      const skillIds: number[] = [];
+      for (const skill of skills) {
+        let skillRecord = await this.skillRepository.findByName(skill);
+        if (!skillRecord) {
+          skillRecord = await this.skillRepository.createAndReturn({
+            name: skill,
+          });
+        }
+        skillIds.push(skillRecord.id);
+      }
+
+      const duplicate = await this.jobRepository.findDuplicate({
+        title: job.title,
+        companyId: companyRecord.id,
+        locationId: locationRecord.id,
+      });
+      if (duplicate) {
+        this.logger.warn(
+          `Duplicate job detected: ${job.title} at ${company.name}`,
+        );
+        return;
+      }
+
+      const jobCreated = await this.jobRepository.createAndReturn({
+        title: job.title,
+        locationId: locationRecord.id,
+        companyId: companyRecord.id,
+        type: `${job.type}`,
+        remote: job.remote,
+        salaryMin: job.salary.min,
+        salaryMax: job.salary.max,
+        currency: job.salary.currency,
+        experience: job.experience,
+        postedDate: job.postedDate,
+      });
+
+      for (const skillId of skillIds) {
+        await this.jobSkillRepository.linkJobSkill(jobCreated.id, skillId);
+      }
+
+      this.logger.log(`Job persisted: ${job.title} at ${company.name}`);
     }
-
-    const jobCreated = await this.jobRepository.createAndReturn({
-      title: job.title,
-      locationId: locationRecord.id,
-      companyId: companyRecord.id,
-      type: `${job.type}`,
-      remote: job.remote,
-      salaryMin: job.salary.min,
-      salaryMax: job.salary.max,
-      currency: job.salary.currency,
-      experience: job.experience,
-      postedDate: job.postedDate,
-    });
-
-    for (const skillId of skillIds) {
-      await this.jobSkillRepository.linkJobSkill(jobCreated.id, skillId);
-    }
-
-    this.logger.log(`Job persisted: ${job.title} at ${company.name}`);
   }
 }
