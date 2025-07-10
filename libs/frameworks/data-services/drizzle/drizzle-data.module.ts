@@ -1,32 +1,47 @@
 import { Pool } from 'pg';
 import * as schema from './schema';
-import { Module } from '@nestjs/common';
+import { Module, Logger } from '@nestjs/common';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { EnvConfigService } from '@libs/config/env';
 import { DATA_SERVICE_TOKEN } from '@libs/core/interface/services';
+import { sql } from 'drizzle-orm';
 
 /**
- * NestJS module that provides a data service using Drizzle ORM and PostgreSQL.
+ * NestJS module that provides a PostgreSQL database connection using Drizzle ORM.
  *
  * @module DrizzleDataServiceModule
- * @description
- * Registers a provider for `DATA_SERVICE_TOKEN` using a factory that creates a PostgreSQL connection pool
- * with a connection string from `EnvConfigService`, and initializes Drizzle ORM with the specified schema.
  *
- * @provider DATA_SERVICE_TOKEN - The data service instance configured with Drizzle ORM and PostgreSQL.
- * @exports DATA_SERVICE_TOKEN - Makes the data service available for import in other modules.
+ * @remarks
+ * - Registers a provider for `DATA_SERVICE_TOKEN` using a factory that:
+ *   - Retrieves the PostgreSQL connection string from `EnvConfigService`.
+ *   - Initializes a connection pool and Drizzle ORM instance.
+ *   - Verifies the database connection on startup.
+ *   - Logs success or exits the process on failure.
+ *
+ * @exports DATA_SERVICE_TOKEN
  */
 @Module({
   providers: [
     {
       provide: DATA_SERVICE_TOKEN,
       inject: [EnvConfigService],
-      useFactory: (configService: EnvConfigService) => {
+      useFactory: async (configService: EnvConfigService) => {
+        const logger = new Logger('DrizzleDataService');
         const pool = new Pool({
           connectionString: configService.getPostgreSqlConnectionString(),
         });
 
-        return drizzle(pool, { schema });
+        const db = drizzle(pool, { schema });
+
+        try {
+          await db.execute(sql`SELECT 1`);
+          logger.log('Successfully connected to PostgreSQL.');
+        } catch (e: any) {
+          logger.error('Database connection failed', e.stack);
+          process.exit(1);
+        }
+
+        return db;
       },
     },
   ],

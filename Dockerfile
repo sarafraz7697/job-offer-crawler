@@ -1,29 +1,33 @@
+FROM node:20.11.0-alpine AS base
 
-FROM node:20-alpine AS builder
+RUN npm i -g pnpm
+
+FROM base AS dependencies
 
 WORKDIR /app
-
-RUN npm install -g pnpm
-
-COPY . .
-
+COPY package.json pnpm-lock.yaml ./
 RUN pnpm install
 
-RUN pnpm run build
-
-FROM node:20-alpine
+FROM dependencies AS development
 
 WORKDIR /app
+COPY . .
 
-RUN npm install -g pnpm
+RUN pnpm build
 
-COPY --from=builder /app/package.json .
-COPY --from=builder /app/pnpm-lock.yaml .
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/.env .env
+FROM development AS build
 
-RUN pnpm install --prod
+WORKDIR /app
+COPY . .
 
-EXPOSE 3000
+RUN pnpm prune --prod
 
-CMD ["node", "dist/main"]
+FROM base AS deploy
+
+WORKDIR /app
+COPY --from=build /app/dist/ ./dist/
+COPY --from=build /app/node_modules ./node_modules
+ENV NODE_ENV=production
+
+WORKDIR /app/dist
+CMD [ "node", "src/main" ]

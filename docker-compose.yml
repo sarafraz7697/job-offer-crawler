@@ -40,12 +40,12 @@ services:
     depends_on:
       - postgres
     environment:
-      PORT: 3000
-      DATABASE_URL: postgres://joboffer123:joboffer123@postgres:5432/jobofferdb
-      JOB_CRAWLER_SCHEDULE: "*/5 * * * * *"
+      PORT: ${PORT}
+      POSTGRESQL_CONNECTION_URI: ${POSTGRESQL_CONNECTION_URI}
+      JOB_CRAWLER_SCHEDULE: ${JOB_CRAWLER_SCHEDULE}
     networks:
       - jobnetwork
-    restart: unless-stopped
+    restart: always
 
 volumes:
   pgdata:

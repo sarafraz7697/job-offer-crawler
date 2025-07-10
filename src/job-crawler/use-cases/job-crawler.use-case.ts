@@ -25,9 +25,8 @@ export class JobCrawlerUseCase {
     private readonly persister: JobPersistService,
   ) {}
 
-  async execute(): Promise<boolean> {
+  async execute(): Promise<void> {
     const jobs: UnifiedJobDto[] = [];
-    let success = true;
 
     for (const source of this.sources) {
       const raw = await source.fetch();
@@ -38,12 +37,9 @@ export class JobCrawlerUseCase {
       try {
         const validJob = validateUnifiedJob(job);
         await this.persister.process(validJob);
-        success = true;
       } catch (error) {
         this.logger.warn(`Invalid job data skipped: ${error.message}`);
-        success = false;
       }
     }
-    return success;
   }
 }
